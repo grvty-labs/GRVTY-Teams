@@ -67,6 +67,8 @@ db2.sqlite
 built/*
 node_modules/*
 static/dist/*
+_DS_Store
+__.DS_Store
 
 # MEDIA
 media/*
