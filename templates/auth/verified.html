@@ -1,0 +1,27 @@
+{% extends 'base_simple.html' %}
+{% load configuration_tags %}
+{% load staticfiles %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/pages/forgot-password.min.css' %}">
+{% endblock %}
+
+{% block body_class %}page-forgot-password{% endblock %}
+
+{% block content %}
+<h2>Verification Complete</h2>
+<p>Your email address <i>{{ user.email }}</i> has been verified.</p>
+<br />
+<a href="/" class="btn btn-primary">GO TO HOME PAGE</a>
+{% endblock %}
+
+{% block footer %}
+<footer class="page-copyright">
+  {% if CONFIGURATION.site_url %}
+  <p>WEBSITE BY <a href="{{ CONFIGURATION.site_url }}">{{ 'SITE_NAME'|settings }}</a></p>
+  {% else %}
+  <p>WEBSITE BY {{ 'SITE_NAME'|settings }}</p>
+  {% endif %}
+  <p>© 2015. All RIGHTS RESERVED.</p>
+</footer>
+{% endblock %}

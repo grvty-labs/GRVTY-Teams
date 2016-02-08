@@ -1,0 +1,32 @@
+{% extends 'emails/base.html' %}
+{% load configuration_tags %}
+
+{% block content %}
+<h2 style="color: #1a1a1a;">Hi:</h2>
+
+<p>{{ user.full_name }} would like you to join his team in {{ 'SITE_NAME'|settings }}. In order to join and fully understand your marketing personas, you will need to create an account.</p>
+
+<p>Sign Up by Clicking The Button Below.</p>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 12px; margin-bottom: 12px; ">
+  <tr>
+    <td>
+      <table border="0" cellspacing="0" cellpadding="0" width="100%">
+        <tr>
+          <td>
+            <a href="{{ domain }}{% url 'Auth:sign_up' %}" target="_blank" style="display:inline-block; color: #fff; border-left: 15px solid; border-right: 15px solid; border-top: 12px solid; border-bottom: 12px solid; font-size: 16px; text-decoration: none; text-align: center; -webkit-text-size-adjust: none; font-family: Helvetica, arial, sans-serif; background-color: #a17a49; border-color: #a17a49;">
+              <span style="padding-left: 5px; padding-right: 5px;">Sign Up</span>
+            </a>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<p>
+  Have a Great Day
+</p>
+{% endblock %}
+
+{% block footer %}{% endblock %}

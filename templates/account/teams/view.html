@@ -1,0 +1,356 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'fonts/ionicons/ionicons.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/bootstrap-tokenfield/bootstrap-tokenfield.css' %}">
+<style type="text/css">
+  .team_member_name {
+    font-style: italic;
+  }
+</style>
+{% endblock %}
+
+{% block body_class %}teams{% endblock %}
+
+{% block content %}
+<div class="page padding-30">
+  <div class="page-content bg-white">
+    <!-- Contacts Content Header -->
+    <div class="page-header">
+      <h1 class="page-title">Team Members</h1>
+      <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li><a href="{% url 'Auth:teams' %}">Teams</a></li>
+        <li class="active team_name_label">{{ team.name }}</li>
+      </ol>
+      <div class="page-header-actions">
+        {% if request.user == team.owner %}
+        <a href="" id="show_edit_modal" type="button" class="btn btn-sm btn-icon btn-inverse btn-round btn-header-action" data-toggle="tooltip" data-original-title="Edit Team">
+          <i class="icon wb-pencil" aria-hidden="true"></i>
+        </a>
+        {% endif %}
+      </div>
+    </div>
+    <!-- Teams Content -->
+    <div class="page-content page-content-table">
+      <!-- Teams -->
+      <table class="table tablesaw" data-tablesaw-mode="stack" data-plugin="animateList" data-animate="fade" data-child="tr" data-selectable="selectable">
+        <thead>
+          <tr>
+            <th class="cell-300" scope="col" data-tablesaw-sortable-col data-tablesaw-priority="3">Name</th>
+            <th class="cell-300 hidden-xs" scope="col" data-tablesaw-sortable-col data-tablesaw-priority="3">Last Login</th>
+            <th scope="col" data-tablesaw-sortable-col data-tablesaw-priority="4">Email</th>
+            <th scope="col" data-tablesaw-sortable-col data-tablesaw-priority="4">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="clickable-row">
+            <td class="cell-300">
+              <a class="avatar avatar-busy" href="javascript:void(0)">
+                <img class="img-responsive" src="{{ team.owner.get_photo_url }}" />
+                <i></i>
+              </a>
+              <span>{{ team.owner.full_name|title }}</span>
+            </td>
+            <td class="cell-300 hidden-xs">{{ team.owner.last_login }}</td>
+            <td>{{ team.owner.email }}</td>
+            <td></td>
+          </tr>
+          {% for member in team.members.all %}
+            {% if member != team.owner %}
+          <tr class="clickable-row" data-member_id="{{ member.id }}">
+            <td class="cell-300" style="height:82px; vertical-align:middle;">
+              <a class="avatar" href="javascript:void(0)">
+                <img class="img-responsive" src="{{ member.get_photo_url }}" />
+              </a>
+              <span class="member_name">{{ member.full_name|title }}</span>
+            </td>
+            <td class="cell-300 hidden-xs">{{ member.last_login }}</td>
+            <td>{{ member.email }}</td>
+            <td>
+              {% if request.user == team.owner %}
+              <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#removeTeamMemberModal">Remove Member</button>
+              {% endif %}
+            </td>
+          </tr>
+            {% endif %}
+          {% endfor %}
+          {% for invitation in team.pending_invitations %}
+          <tr data-href="{% url 'Auth:cancel_invitation' invitation.id %}">
+            <td class="hidden-xs">
+              <a class="avatar avatar-busy" href="javascript:void(0)">
+                <img class="img-responsive" src="{% static 'photos/gravatar.jpg' %}" />
+              </a>
+            </td>
+            <td>
+              <span class="label label-info label-lg">Pending</span>
+            </td>
+            <td>{{ invitation }}</td>
+            <td>
+              <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteInvitationModal">Delete Invitation</button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <ul data-plugin="paginator" data-total="50" data-skin="pagination-gap"></ul>
+    </div>
+    <a type="button" class="btn btn-primary btn-margin-top" data-toggle="modal" data-target="#inviteTeamMatesModal">Invite Teammates</a>
+  </div>
+</div>
+{% if request.user == team.owner %}
+<div class="modal" id="editTeamModal">
+  <div class="modal-dialog modal-center">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title">Edit Team</h4>
+      </div>
+      {% include 'account/teams/form.html' with form=edit_team_form %}
+    </div>
+  </div>
+</div>
+<div class="modal" id="deleteTeamModal">
+  <div class="modal-dialog modal-center">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title">Delete Team</h4>
+      </div>
+      <div class="modal-body">
+        Are you sure? All deletes are final.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" data-target="#editTeamModal">Cancel</button>
+        <a href="{% url 'Auth:team_delete' team.id %}" type="submit" class="btn btn-danger">Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal" id="removeTeamMemberModal">
+  <div class="modal-dialog modal-center">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title">Remove Team Member</h4>
+      </div>
+      <div class="modal-body">
+        <span class="team_member_name"></span> won't be able to see or edit this team's personas.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <a href="{% url 'Auth:team_remove_member' team.id %}" id="remove_member_link" class="btn btn-danger">Remove</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+<!-- Teammates -->
+<div class="modal" id="inviteTeamMatesModal">
+  <div class="modal-dialog modal-center">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title">Invite Teammates</h4>
+      </div>
+      {% include 'account/teams/invite_teammates_form.html' with form=invite_form %}
+    </div>
+  </div>
+</div>
+<div class="modal" id="successModal">
+  <div class="modal-dialog modal-center">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title" style="color:green">Success</h4>
+      </div>
+      <div class="modal-body">
+        Invitations have been delivered.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal" id="deleteInvitationModal">
+  <div class="modal-dialog modal-center">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title">Delete Team Member Invitation</h4>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete <span class="team_member_name"></span> invitation for this team?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <a href="#" id="delete_invitation_link" class="btn btn-danger">Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script src="{% static 'vendor/bootstrap-tokenfield/bootstrap-tokenfield.min.js' %}" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+
+  $(document).ready(function() {
+
+    $('#show_edit_modal').click(function(evt) {
+      evt.preventDefault();
+      $('#editTeamModal').modal();
+    });
+
+    $('#editTeamModal').on('shown.bs.modal', function (e) {
+      $('#{{ edit_team_form.visible_fields.0.auto_id }}').focus();
+    });
+
+    $('#deleteInvitationModal').on('shown.bs.modal', function (e) {
+      var hover_row = $('table tr:hover');
+      $('#delete_invitation_link').attr('href', hover_row.data('href'));
+    });
+
+    $('#removeTeamMemberModal').on('shown.bs.modal', function (e) {
+      var hover_row = $('table tr:hover');
+      $('#{{ edit_team_form.visible_fields.0.auto_id }}').focus();
+      $('.team_member_name', $(this)).text($('.member_name', hover_row).text());
+      var href = $('#remove_member_link').attr('href');
+      if (href.indexOf('?') != -1) {
+        href = href.substr(0, href.indexOf('?'));
+      }
+      $('#remove_member_link').attr('href', href+'?member_id='+hover_row.data('member_id'));
+    });
+
+    $('#editTeamModal form').submit(function (evt) {
+      evt.preventDefault();
+      var form = this;
+      $.ajax({
+        url: $(form).attr('action'),
+        data: $(form).serialize(),
+        type: $(form).attr('method'),
+        xhrFields: {
+          withCredentials: true,
+        },
+        success: function(data) {
+          try {
+            data = $.parseJSON(data);
+          } catch (e) {};
+          if (data.status == 'OK') {
+            $('.team_name_label').text(data.text);
+            $('#editTeamModal').modal('hide');
+          } else {
+            $('#newTeamModal .modal-body').html($('.modal-body', data).html());
+          }
+        },
+      });
+    });
+
+    // TeamMates
+    $('#inviteTeamMatesModal').on('shown.bs.modal', function (e) {
+      $('#{{ invite_form.emails.auto_id }}')
+        .on('tokenfield:createtoken', function(e) {
+          var data = e.attrs.value.split('|');
+          e.attrs.value = data[1] || data[0];
+          e.attrs.label = data[1] ? data[0] + ' (' + data[1] + ')' : data[0];
+        })
+        .on('tokenfield:createdtoken', function(e) {
+          var re = /\S+@\S+\.\S+/;
+          var valid = re.test(e.attrs.value);
+          if (!valid) {
+            $(e.relatedTarget).addClass('invalid');
+          }
+        })
+        .on('tokenfield:edittoken', function(e) {
+          if (e.attrs.label !== e.attrs.value) {
+            var label = e.attrs.label.split(' (');
+            e.attrs.value = label[0] + '|' + e.attrs.value;
+          }
+        })
+        .tokenfield({
+          delimiter: [",", " "],
+          createTokensOnBlur: true
+        });
+        $('#{{ invite_form.emails.auto_id }}-tokenfield').focus();
+    });
+
+    $('#inviteTeamMatesModal').on('hidden.bs.modal', function (e) {
+      $('#inviteTeamMatesModal form').find('.form-group').removeClass('has-error');
+      $('#errors-container').html('');
+    });
+
+    $('#successModal').on('hidden.bs.modal', function (e) {
+      window.location.reload();
+    });
+
+    $('#inviteTeamMatesModal form').submit(function (evt) {
+      evt.preventDefault();
+      var form = this;
+      $.ajax({
+        url: $(form).attr('action'),
+        data: $(form).serialize(),
+        type: $(form).attr('method'),
+        xhrFields: {
+          withCredentials: true,
+        },
+        success: function(data) {
+          $('#errors-container').html("");
+          try {
+            data = $.parseJSON(data);
+          } catch (e) {};
+
+          if (data == 'OK') {
+            $(form).find('.form-group').removeClass('has-error');
+            $('#{{ invite_form.emails.auto_id }}').tokenfield('destroy');
+            $('#{{ invite_form.emails.auto_id }}').val('');
+
+            $('#inviteTeamMatesModal').modal('hide');
+            $('#successModal').modal();
+            setTimeout(function(){ $('#successModal').modal('hide'); }, 2000);
+          } else {
+            $('#inviteTeamMatesModal .modal-body').html($('.modal-body', data).html());
+            $('#{{ invite_form.emails.auto_id }}')
+              .on('tokenfield:createtoken', function(e) {
+                var data = e.attrs.value.split('|');
+                e.attrs.value = data[1] || data[0];
+                e.attrs.label = data[1] ? data[0] + ' (' + data[1] + ')' : data[0];
+              })
+              .on('tokenfield:createdtoken', function(e) {
+                var re = /\S+@\S+\.\S+/;
+                var valid = re.test(e.attrs.value);
+                if (!valid) {
+                  $(e.relatedTarget).addClass('invalid');
+                }
+              })
+              .on('tokenfield:edittoken', function(e) {
+                if (e.attrs.label !== e.attrs.value) {
+                  var label = e.attrs.label.split(' (');
+                  e.attrs.value = label[0] + '|' + e.attrs.value;
+                }
+              })
+              .tokenfield({
+                delimiter: [",", " "],
+                createTokensOnBlur: true
+              });
+          }
+        },
+      });
+    });
+  });
+</script>
+{% endblock %}

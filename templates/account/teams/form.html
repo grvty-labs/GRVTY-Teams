@@ -1,0 +1,22 @@
+<form action="{% if form.instance.id %}{% url 'Auth:team_edit' form.instance.id %}{% else %}{% url 'Auth:team_add' %}{% endif %}" class="form-horizontal" method="post">
+  <div class="modal-body">
+    {% csrf_token %}
+    {% for field in form.visible_fields %}
+    <div class="form-group {% if field.errors %}has-error{% endif %}">
+      <label class="col-sm-3 control-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+      <div class="col-sm-9">
+        <input type="text" class="form-control" id="{{ field.auto_id }}" name="{{ field.name }}" {% if field.value %}value="{{ field.value }}"{% endif %} />
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="modal-footer">
+    {% if form.instance.id %}
+    <div class="pull-left">
+      <button type="button" class="btn btn-danger" data-dismiss="modal" data-toggle="modal" data-target="#deleteTeamModal">Delete Team</button>
+    </div>
+    {% endif %}
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <button type="submit" class="btn btn-primary">{% if form.instance.id %}Save{% else %}Create{% endif %}</button>
+  </div>
+</form>

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'vendor/dropify/dropify.min.css' %}">
+<style type="text/css">
+  .dropify-wrapper {
+    max-width: 200px;
+  }
+</style>
+{% endblock %}
+
+{% block body_class %}teams{% endblock %}
+
+{% block content %}
+<div class="page padding-30">
+  <div class="page-content bg-white">
+    <!-- Contacts Content Header -->
+    <div class="page-header">
+      <h1 class="page-title">Profile</h1>
+      <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li class="active">Profile</li>
+      </ol>
+    </div>
+    <!-- Profile Content -->
+    <div class="page-content">
+      <form action="" method="post" enctype='multipart/form-data'>
+        {% csrf_token %}
+        <div class="form-group">
+          <label class="control-label" for="{{ form.image.auto_id }}">{{ form.image.label }}</label>
+          <input type="file" name="{{ form.image.name }}" id="{{ form.image.auto_id }}" data-plugin="dropify" data-default-file="{{ form.instance.get_photo_url }}" data-max-file-size="2M" accept="image/*" />
+          <div style="display:none">
+            <input id="{{ form.image.name }}-clear_id" name="{{ form.image.name }}-clear" type="checkbox">
+          </div>
+        </div>
+        {% for field in form.visible_fields %}
+          {% if not field.name == 'image' %}
+          <div class="form-group form-material">
+            <label class="control-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+            {{ field }}
+          </div>
+          {% endif %}
+        {% endfor %}
+        <div class="form-group form-material">
+          <label class="control-label">Password</label>
+          <a href="{% url 'Auth:change_password' %}" class="btn btn-link">Change Password</a>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js/components/material.min.js' %}"></script>
+<script src="{% static 'vendor/dropify/dropify.min.js' %}"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('.dropify-clear').click(function() {
+      $('#{{ form.image.name }}-clear_id').attr('checked', true);
+    });
+    $('#{{ form.image.auto_id }}').change(function() {
+      $('#{{ form.image.name }}-clear_id').attr('checked', false);
+    });
+  })
+</script>
+{% endblock %}

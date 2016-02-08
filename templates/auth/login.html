@@ -1,0 +1,40 @@
+{% extends 'base_simple.html' %}
+{% load staticfiles %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/pages/login.min.css' %}">
+{% endblock %}
+
+{% block body_class %}page-login-v3{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-body">
+    <div class="brand">
+      <img class="brand-img" src="{% static 'images/logo.png' %}">
+    </div>
+    <form action="" method="post">
+      {% csrf_token %}
+      <div class="form-group form-material floating {% if form.username.errors %}has-error{% endif %}">
+        <input type="text" class="form-control" name="{{ form.username.name }}" id="{{ form.username.auto_id }}" {% if form.username.value %}value="{{ form.username.value }}"{% endif %} autofocus />
+        <label class="floating-label">{{ form.username.label }}</label>
+      </div>
+      <div class="form-group form-material floating {% if form.password.errors %}has-error{% endif %}">
+        <input type="password" class="form-control" name="{{ form.password.name }}" id="{{ form.password.auto_id }}" />
+        <label class="floating-label">{{ form.password.label }}</label>
+      </div>
+      <div class="form-group clearfix">
+        <a class="pull-right" href="{% url 'Auth:forgot_password' %}">Forgot password?</a>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block btn-lg margin-top-40">Sign in</button>
+    </form>
+    <p>Still no account? Please go to <a href="{% url 'Auth:sign_up' %}">Sign up</a></p>
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger" role="alert">
+      <strong>Error!</strong><br />
+      Username and Password didn't match.
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

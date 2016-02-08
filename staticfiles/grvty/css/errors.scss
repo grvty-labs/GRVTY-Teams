@@ -1,0 +1,38 @@
+@import '_variables';
+
+.page-error {
+  background-color: $tan-yellow;
+  p {
+    color: $empty-black;
+  }
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+  color: $empty-black;
+}
+
+.page-error .error-advise {
+  color: $old-steel;
+}
+
+.btn-primary {
+  background-color: $glory-gold;
+  border-color: $glory-gold;
+}
+
+.btn-primary.focus, .btn-primary:focus, .btn-primary:hover {
+  background-color: $glory-gold-hover;
+  border-color: $glory-gold-hover;
+}
+
+a {
+  color: $glory-gold;
+}
+a.focus, a:focus, a:hover {
+  color: $glory-gold-hover;
+}
+
+.page-copyright,
+.page-copyright .social .icon {
+  color: $space-gray;
+}

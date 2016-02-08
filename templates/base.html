@@ -1,0 +1,203 @@
+{% load configuration_tags %}
+{% load staticfiles %}
+<!DOCTYPE html>
+<html class="no-js css-menubar" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <meta name="description" content="bootstrap admin template">
+    <meta name="author" content="">
+    <title>{{ 'SITE_NAME'|settings }}{% block title %} - {{ title }}{% endblock %}</title>
+
+    <link rel="apple-touch-icon" href="{% static 'images/apple-touch-icon.png' %}">
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-extend.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/site.min.css' %}">
+    <!-- Plugins -->
+    <link rel="stylesheet" href="{% static 'vendor/asscrollable/asScrollable.css' %}">
+    <!-- Fonts -->
+    <link rel="stylesheet" href="{% static 'fonts/web-icons/web-icons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/brand-icons/brand-icons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/font-awesome/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/toastr/toastr.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/bootstrap-select/bootstrap-select.min.css' %}">
+    {% block css %}{% endblock %}
+    <link rel="stylesheet" href="{% static 'grvty/css/main.min.css' %}">
+    <!--[if lt IE 9]>
+      <script src="{% static 'html5shiv/html5shiv.min.js' %}"></script>
+      <![endif]-->
+    <!--[if lt IE 10]>
+      <script src="{% static 'media-match/media.match.min.js' %}"></script>
+      <script src="{% static 'respond/respond.min.js' %}"></script>
+      <![endif]-->
+
+    <!-- Scripts -->
+    <script src="{% static 'vendor/breakpoints/breakpoints.js' %}"></script>
+    <script>
+    Breakpoints();
+    </script>
+  </head>
+  <body class="{% block body_class %}dashboard{% endblock %} site-menubar-keep {% if request.user.menubar_fold %}site-menubar-fold{% else %}site-menubar-unfold{% endif %}">
+    <!--[if lt IE 8]>
+          <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+      <![endif]-->
+    <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega" role="navigation">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle hamburger hamburger-close navbar-toggle-left hided" data-toggle="menubar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="hamburger-bar"></span>
+        </button>
+        <button type="button" class="navbar-toggle collapsed" data-target="#site-navbar-collapse" data-toggle="collapse">
+          <i class="icon wb-more-horizontal" aria-hidden="true"></i>
+        </button>
+        <a href="/">
+          <div class="navbar-brand navbar-brand-center site-gridmenu-toggle" data-toggle="gridmenu">
+            <img class="navbar-brand-logo" src="{% static 'images/logo-menu.png' %}" title="Grvity">
+          </div>
+        </a>
+      </div>
+      <div class="navbar-container container-fluid">
+        <!-- Navbar Collapse -->
+        <div class="collapse navbar-collapse navbar-collapse-toolbar" id="site-navbar-collapse">
+          <!-- Navbar Toolbar -->
+          <ul class="nav navbar-toolbar">
+            <li class="hidden-float" id="toggleMenubar">
+              <a data-toggle="menubar" href="#" role="button">
+                <i class="icon hamburger hamburger-arrow-left">
+                  <span class="sr-only">Toggle menubar</span>
+                  <span class="hamburger-bar"></span>
+                </i>
+              </a>
+            </li>
+          </ul>
+          <!-- End Navbar Toolbar -->
+          <!-- Navbar Toolbar Right -->
+          <ul class="nav navbar-toolbar navbar-right navbar-toolbar-right">
+            <li class="dropdown">
+              <a class="navbar-avatar dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false"
+              data-animation="scale-up" role="button">
+                <span class="avatar">
+                  <img class="user_profile_image" src="{{ request.user.get_photo_url }}" alt="user_profile_image">
+                </span>
+                <span class="user-name">{{ request.user.full_name|title }}</span>
+              </a>
+              <ul class="dropdown-menu" role="menu">
+                <li role="presentation">
+                  <a href="{% url 'Auth:profile' %}" role="menuitem"><i class="icon wb-user" aria-hidden="true"></i> Profile</a>
+                </li>
+                <li role="presentation">
+                  <a href="{% url 'Identity:help' %}" role="menuitem"><i class="icon wb-help" aria-hidden="true"></i> Help</a>
+                </li>
+                <li class="divider" role="presentation"></li>
+                <li role="presentation">
+                  <a href="{% url 'Auth:logout' %}" role="menuitem"><i class="icon wb-power" aria-hidden="true"></i> Logout</a>
+                </li>
+              </ul>
+            </li>
+
+
+          </ul>
+          <!-- End Navbar Toolbar Right -->
+        </div>
+        <!-- End Navbar Collapse -->
+        <!-- Site Navbar Seach -->
+        <div class="collapse navbar-search-overlap" id="site-navbar-search">
+          <form role="search">
+            <div class="form-group">
+              <div class="input-search">
+                <i class="input-search-icon wb-search" aria-hidden="true"></i>
+                <input type="text" class="form-control" name="site-search" placeholder="Search...">
+                <button type="button" class="input-search-close icon wb-close" data-target="#site-navbar-search"
+                data-toggle="collapse" aria-label="Close"></button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <!-- End Site Navbar Seach -->
+      </div>
+    </nav>
+    <div class="site-menubar site-menubar-light">
+      <div class="site-menubar-body">
+        <div>
+          <div>
+            <ul class="site-menu">
+              <li class="site-menu-category">Menu</li>
+              <li class="site-menu-item {% if personas_active %}active{% endif %}">
+                <a class="animsition-link" href="{% url 'Identity:personas' %}">
+                  <i class="site-menu-icon wb-user" aria-hidden="true"></i>
+                  <span class="site-menu-title">Personas</span>
+                </a>
+              </li>
+              <li class="site-menu-item {% if teams_active %}active{% endif %}">
+                <a class="animsition-link" href="{% url 'Auth:teams' %}">
+                  <i class="site-menu-icon wb-users" aria-hidden="true"></i>
+                  <span class="site-menu-title">Teams</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Content -->
+    {% block content %}{% endblock %}
+    <!-- End Content -->
+
+    {% if not request.user.verified %}
+    <div id="toast-bottomFullWidth" class="toast-bottom-full-width" aria-live="polite" role="alert">
+      <div class="toast toast-warning" style="display: block;">
+        <div class="toast-message">Are you human or a dancer? Please verify your email. <a id="resend_verification_email" href="{% url 'Auth:resend_verification_email' %}" class="btn btn-success btn-xs">Resend email</a></div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Core  -->
+    <script src="{% static 'vendor/jquery/jquery.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/bootstrap.js' %}"></script>
+    <script src="{% static 'vendor/asscrollable/jquery.asScrollable.all.js' %}"></script>
+    <script src="{% static 'vendor/ashoverscroll/jquery-asHoverScroll.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap-select/bootstrap-select.js' %}"></script>
+    <!-- Scripts -->
+    <script src="{% static 'js/core.js' %}"></script>
+    <script src="{% static 'js/site.js' %}"></script>
+    <script src="{% static 'js/sections/menu.js' %}"></script>
+    <script src="{% static 'js/sections/menubar.js' %}"></script>
+    <script src="{% static 'js/sections/sidebar.js' %}"></script>
+    <script type="text/javascript">
+      var Site = window.Site;
+      $(document).ready(function($) {
+        Site.run();
+        $('#toggleMenubar').click(function() {
+          menubar_fold = $('i', $(this)).hasClass('unfolded');
+          var post_data = {
+            'menubar_fold': menubar_fold,
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+          }
+          var saved = false;
+          $.post("{% url 'Auth:interface_data' %}", post_data, function(data) {
+            saved = true;
+          });
+        });
+
+        {% if not request.user.verified %}
+        $('#resend_verification_email').click(function(evt) {
+          $(this).attr('disabled', true);
+          $(this).addClass('disabled');
+          evt.preventDefault();
+          $.get($(this).attr('href'), function(data) {
+            var parent_container = $('#resend_verification_email').parent().parent();
+            parent_container.removeClass('toast-warning').addClass('toast-success');
+            $('.toast-message', parent_container).html("An email with a link to verify your email has been sent.")
+          });
+        });
+        {% endif %}
+
+      });
+    </script>
+    {% block js %}{% endblock %}
+
+  </body>
+</html>

@@ -1,0 +1,60 @@
+{% load configuration_tags %}
+{% load staticfiles %}
+<!DOCTYPE html>
+<html class="no-js css-menubar" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+
+  <meta name="author" content="">
+  <meta name="description" content="">
+
+  <title>{{ 'SITE_NAME'|settings }}{% block title %} - {{ title }}{% endblock %}</title>
+  <link rel="apple-touch-icon" href="{% static 'images/apple-touch-icon.png' %}">
+  <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/bootstrap-extend.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/site.min.css' %}">
+  <!-- Fonts -->
+  <link rel="stylesheet" href="{% static 'fonts/brand-icons/brand-icons.min.css' %}">
+  {% block css %}{% endblock %}
+  <!-- {{ 'SITE_NAME'|settings }} -->
+  <link rel="stylesheet" href="{% static 'grvty/css/simple.min.css' %}">
+  <!--[if lt IE 9]>
+    <script src="{% static 'html5shiv/html5shiv.min.js' %}"></script>
+    <![endif]-->
+  <!--[if lt IE 10]>
+    <script src="{% static 'media-match/media.match.min.js' %}"></script>
+    <script src="{% static 'respond/respond.min.js' %}"></script>
+    <![endif]-->
+  <!-- Scripts -->
+  <script src="{% static 'vendor/breakpoints/breakpoints.js' %}"></script>
+  <script>
+  Breakpoints();
+  </script>
+</head>
+<body class="{% block body_class %}{% endblock %} layout-full">
+  <!--[if lt IE 8]>
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+  <!-- Page -->
+  <div class="page animsition vertical-align text-center" data-animsition-in="fade-in" data-animsition-out="fade-out">
+    <div class="page-content vertical-align-middle">
+      {% block content %}{% endblock %}
+      {% block footer %}
+      <footer class="page-copyright page-copyright-inverse">
+        {% if CONFIGURATION.site_url %}
+        <p>WEBSITE BY <a href="{{ CONFIGURATION.site_url }}">{{ 'SITE_NAME'|settings }}</a></p>
+        {% else %}
+        <p>WEBSITE BY {{ 'SITE_NAME'|settings }}</p>
+        {% endif %}
+        <p>© 2015. All RIGHTS RESERVED.</p>
+      </footer>
+      {% endblock %}
+    </div>
+  </div>
+  <!-- End Page -->
+</body>
+</html>

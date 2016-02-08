@@ -1,0 +1,20 @@
+<form action="{% url 'Identity:invite_friends' %}" class="form-horizontal" id="invite_friends_form" method="post">
+  <div class="modal-body">
+    {% csrf_token %}
+    {% if form.errors %}
+    {% for error in form.emails.errors %}
+    <div class="pull-right" id="errors-container">{{error}}</div><br />
+    {% endfor %}
+    {% endif %}
+    <div class="form-group {% if form.emails.errors %}has-error{% endif %}">
+      <label class="col-sm-3 control-label" for="{{ form.emails.auto_id }}">{{ form.emails.label }}</label>
+      <div class="col-sm-9">
+        <input type="text" class="form-control" id="{{ form.emails.auto_id }}" name="{{ form.emails.name }}" {% if form.emails.value %}value="{{ form.emails.value }}"{% endif %} />
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <button type="submit" class="btn btn-primary">Send</button>
+  </div>
+</form>

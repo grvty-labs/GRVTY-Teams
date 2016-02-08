@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'vendor/animsition/animsition.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/jquery-wizard/jquery-wizard.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/formvalidation/formValidation.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="page">
+  <div class="page-content padding-30 container-fluid">
+    <div class="row" data-plugin="matchHeight" data-by-row="true">
+      <div class="col-md-12">
+        <!-- Panel Video Container -->
+        <div class="panel">
+          <div class="panel-heading">
+            <h1 class="panel-title">Help</h1>
+          </div>
+          <div class="panel-body">
+            {{ CONFIGURATION.welcome_video_embed|safe }}
+          </div>
+        </div>
+        <!-- End Panel Video Container -->
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

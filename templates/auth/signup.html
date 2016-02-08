@@ -1,0 +1,43 @@
+{% extends 'base_simple.html' %}
+{% load staticfiles %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/pages/register.min.css' %}">
+{% endblock %}
+
+{% block body_class %}page-register-v3{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-body">
+    <div class="brand">
+      <img class="brand-img" src="{% static 'images/logo.png' %}">
+    </div>
+    <form action="" method="post">
+      {% csrf_token %}
+      <div class="form-group form-material floating {% if form.first_name.errors %}has-error{% endif %}">
+        <input type="text" class="form-control" name="{{ form.first_name.name }}" id="{{ form.first_name.auto_id }}" {% if form.first_name.value %}value="{{ form.first_name.value }}"{% endif %} autofocus />
+        <label class="floating-label">{{ form.first_name.label }}</label>
+      </div>
+      <div class="form-group form-material floating {% if form.last_name.errors %}has-error{% endif %}">
+        <input type="text" class="form-control" name="{{ form.last_name.name }}" id="{{ form.last_name.auto_id }}" {% if form.last_name.value %}value="{{ form.last_name.value }}"{% endif %} />
+        <label class="floating-label">{{ form.last_name.label }}</label>
+      </div>
+      <div class="form-group form-material floating {% if form.email.errors %}has-error{% endif %}">
+        <input type="email" class="form-control" name="{{ form.email.name }}" id="{{ form.email.auto_id }}" {% if form.email.value %}value="{{ form.email.value }}"{% endif %} />
+        <label class="floating-label">{{ form.email.label }}</label>
+      </div>
+      <div class="form-group form-material floating {% if form.password1.errors %}has-error{% endif %}">
+        <input type="password" class="form-control" name="{{ form.password1.name }}" id="{{ form.password1.auto_id }}" />
+        <label class="floating-label">{{ form.password1.label }}</label>
+      </div>
+      <div class="form-group form-material floating {% if form.password2.errors %}has-error{% endif %}">
+        <input type="password" class="form-control" name="{{ form.password2.name }}" id="{{ form.password2.auto_id }}" />
+        <label class="floating-label">{{ form.password2.label }}</label>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block btn-lg margin-top-40">Sign up</button>
+    </form>
+    <p>Have an account already? Please go to <a href="{% url 'Auth:login' %}">Sign In</a></p>
+  </div>
+</div>
+{% endblock %}

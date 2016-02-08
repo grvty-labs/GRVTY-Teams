@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block body_class %}teams{% endblock %}
+
+{% block content %}
+<div class="page padding-30">
+
+  <div class="page-content bg-white">
+    <!-- Contacts Content Header -->
+    <div class="page-header">
+      <h1 class="page-title">Teams</h1>
+      <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li class="active">Teams</li>
+      </ol>
+    </div>
+    <!-- Teams Content -->
+    <div class="page-content page-content-table">
+      <!-- Teams -->
+      <table class="table tablesaw" data-tablesaw-mode="stack" data-plugin="animateList" data-animate="fade" data-child="tr" data-selectable="selectable">
+        <thead>
+          <tr>
+            <th class="cell-300" scope="col" data-tablesaw-sortable-col data-tablesaw-priority="3">Team Name</th>
+            <th class="cell-300" scope="col" data-tablesaw-sortable-col data-tablesaw-priority="3">Created</th>
+            <th scope="col" data-tablesaw-sortable-col data-tablesaw-priority="4">Teammates</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for team in teams %}
+          <tr class="clickable-row" data-href="{% url 'Auth:team_view' team.id %}">
+            <td class="cell-300">{{ team.name }}</td>
+            <td class="cell-300">
+              <a class="avatar" href="javascript:void(0)" data-original-title="{{ team.owner.first_name }} {{ team.owner.last_name.0|upper }}." data-placement="top">
+                <img class="img-responsive" src="{{ team.owner.get_photo_url }}" />
+              </a>
+            </td>
+            <td>
+              {% for member in team.members.all %}
+              <a class="avatar" href="javascript:void(0)" data-original-title="{{ member.first_name }} {{ member.last_name.0|upper }}." data-placement="top">
+                <img class="img-responsive" src="{{ member.get_photo_url }}" />
+              </a>
+              {% endfor %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <ul data-plugin="paginator" data-total="50" data-skin="pagination-gap"></ul>
+    </div>
+  </div>
+</div>
+<!-- Site Action -->
+<div class="site-action">
+  <a class="btn btn-success btn-floating" data-toggle="modal" data-target="#newTeamModal">
+    <i class="front-icon wb-plus animation-scale-up"></i>
+  </a>
+</div>
+<!-- End Site Action -->
+<div class="modal" id="newTeamModal">
+  <div class="modal-dialog modal-center">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title">Create New Team</h4>
+      </div>
+      {% include 'account/teams/form.html' with form=new_team_form %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('table.table .avatar').tooltip();
+    $('#newTeamModal form').submit(function (evt) {
+      evt.preventDefault();
+      var form = this;
+      $.ajax({
+        url: $(form).attr('action'),
+        data: $(form).serialize(),
+        type: $(form).attr('method'),
+        xhrFields: {
+          withCredentials: true,
+        },
+        success: function(data) {
+          try {
+            data = $.parseJSON(data);
+          } catch (e) {};
+          if (data.status == 'OK') {
+            window.location = data.redirect_url;
+          } else {
+            $('#newTeamModal .modal-body').html($('.modal-body', data).html());
+          }
+        },
+      });
+    });
+    $('#newTeamModal').on('shown.bs.modal', function (e) {
+      $('#{{ new_team_form.visible_fields.0.auto_id }}').focus();
+    });
+    $('.clickable-row').click(function() {
+      window.location = $(this).data('href');
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,1 @@
+{% load configuration_tags %}Hi {{ user.first_name|title }}, Welcome To {{ 'SITE_NAME'|settings }}

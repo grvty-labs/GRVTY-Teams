@@ -1,0 +1,79 @@
+{% load configuration_tags %}
+{% load staticfiles %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="initial-scale=1.0">    <!-- So that mobile webkit will display zoomed in -->
+  <meta name="format-detection" content="telephone=no"> <!-- disable auto telephone linking in iOS -->
+
+  <style type="text/css">
+
+    /* Resets: see reset.css for details */
+    body {-webkit-text-size-adjust:none; -ms-text-size-adjust:none;}
+    body {margin:0; padding:0;}
+    table {border-spacing:0;}
+    table td {border-collapse:collapse;}
+
+    /* Constrain email width for small screens */
+    @media screen and (max-width: 600px) {
+        table[class="container"] {
+            width: 95% !important;
+        }
+    }
+    /* Give content more room on mobile */
+    @media screen and (max-width: 480px) {
+        td[class="container-padding"] {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+     }
+  </style>
+</head>
+<body style="margin:0; padding:10px 0;" bgcolor="#ece2d0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+<br>
+
+<!-- 100% wrapper (white background) -->
+<table border="0" width="100%" height="100%" cellpadding="0" cellspacing="0">
+  <tr>
+    <td align="center" valign="top" bgcolor="#ece2d0" style="background-color: #ece2d0;">
+
+      <!-- 600px container (white background) -->
+      <table border="0" width="530" cellpadding="0" cellspacing="0" class="container" bgcolor="#ffffff">
+        <tr>
+          <td class="container-padding" bgcolor="#ffffff" style="background-color: #ffffff; padding: 20px;">
+            <a href="{{ 'DOMAIN_NAME'|settings }}" style="display:block;"><img style="max-width:180px;" src="{{ 'DOMAIN_NAME'|settings|no_slash }}{% static 'images/logo2.png' %}" width="180"/></a>
+          </td>
+        </tr>
+        <tr>
+          <td class="container-padding" bgcolor="#ffffff" style="background-color: #ffffff; padding-left: 30px; padding-right: 30px; font-size: 14px; line-height: 14px; font-family: Helvetica, sans-serif; color: #333333;">
+            <!-- ### BEGIN CONTENT ### -->
+            <table>
+              <tr>
+                <td style="color: #666666; padding-bottom: 30px;">
+                  {% block content %}{% endblock %}
+                </td>
+              </tr>
+              {% block footer %}
+              <tr>
+                <td style="color: #666666; padding-bottom: 20px; text-align: center;">
+                  Social Icons
+                </td>
+              </tr>
+              {% endblock %}
+            </table>
+            <!-- ### END CONTENT ### -->
+          </td>
+        </tr>
+      </table>
+      <!--/600px container -->
+
+    </td>
+  </tr>
+</table>
+<!--/100% wrapper-->
+<br>
+<br>
+</body>
+</html>

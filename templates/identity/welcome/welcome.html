@@ -1,0 +1,385 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'vendor/animsition/animsition.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/jquery-wizard/jquery-wizard.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/formvalidation/formValidation.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/x-editable/x-editable.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/x-editable/address.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/bootstrap-tokenfield/bootstrap-tokenfield.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/bootstrap-sweetalert/sweet-alert.css' %}">
+<style type="text/css">
+  .sweet-alert {
+    position: relative;
+    height: 100px;
+    width: 140px;
+    padding: 0px 30px 0px 30px;
+    margin: 0 auto;
+    top: 0%;
+    left: 0%;
+    z-index: 1700;
+    display: block;
+    overflow: visible;
+    text-align: center;
+    background-color: inherit;
+    border-radius: 0px;
+  }
+</style>
+{% endblock %}
+
+{% block body_class %}welcome{% endblock %}
+
+{% block content %}
+<div class="page">
+  <div class="page-content padding-30 container-fluid">
+    <div class="row" data-plugin="matchHeight" data-by-row="true">
+      <div class="col-md-12">
+        <!-- Panel Wizard Form Container -->
+        <div class="panel" id="completeProfileWizardFormContainer">
+          <div class="panel-heading">
+            <h1 class="panel-title">Welcome</h1>
+          </div>
+          <div class="panel-body">
+            <!-- Steps -->
+            <div class="pearls row">
+              <div class="pearl current col-xs-4">
+                <div class="pearl-icon"><i class="icon wb-video" aria-hidden="true"></i></div>
+                <span class="pearl-title">Introduction Video</span>
+              </div>
+              <div class="pearl col-xs-4">
+                <div class="pearl-icon"><i class="icon wb-user" aria-hidden="true"></i></div>
+                <span class="pearl-title">Complete Profile</span>
+              </div>
+              <div class="pearl col-xs-4">
+                <div class="pearl-icon"><i class="icon wb-check" aria-hidden="true"></i></div>
+                <span class="pearl-title">Success!</span>
+              </div>
+            </div>
+            <!-- End Steps -->
+            <!-- Wizard Content -->
+            <form class="wizard-content form-horizontal" id="CompleteProfileForm">
+              <div class="wizard-pane active" id="Welcome1" role="tabpanel">
+                {{ CONFIGURATION.welcome_video_embed|safe }}
+              </div>
+              <div class="wizard-pane" id="CompleteProfile2" role="tabpanel">
+                <div class="row">
+                  <div class="col-md-2 col-md-push-4">
+                    <div class="widget widget-shadow text-center widget-no-shadow">
+                      <div class="widget-header">
+                        <div class="widget-header-content">
+                          <a class="avatar avatar-profile" href="javascript:void(0)">
+                            <img class="user_profile_image" src="{{ request.user.get_photo_url }}" alt="user_profile_image">
+                          </a>
+                        </div>
+                      </div>
+                      <a type="button" class="btn btn-primary btn-margin-top" id="upload_pic">Edit</a>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-md-push-4 align-center">
+                    <div class="form-group">
+                      <a id="{{ form.first_name.name }}" href="javascript:void(0)" data-type="text" data-pk="1" data-title="{{ form.first_name.label }}">{{ form.first_name.value }}</a>
+                    </div>
+                    <div class="form-group">
+                      <a id="{{ form.last_name.name }}" href="javascript:void(0)" data-type="text" data-pk="2" data-title="{{ form.last_name.label }}">{{ form.last_name.value }}</a>
+                    </div>
+                    <div class="form-group">
+                      <a id="{{ form.email.name }}" href="javascript:void(0)" data-type="text" data-pk="3" data-title="{{ form.email.label }}">{{ form.email.value }}</a>
+                    </div>
+                    <div class="form-group">
+                      <label class="control-label"><b>Password</b></label>
+                      <span class="password-container">password</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 col-md-push-3 align-center">
+                    <div class="form-group">
+                      <a type="button" class="btn btn-primary btn-margin-top" data-toggle="modal" data-target="#inviteFriendsModal">Invite your Friends</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="wizard-pane" id="FinishProfile3" role="tabpanel">
+                <div class="text-center margin-vertical-20">
+                  <div class="sweet-alert">
+                    <div class="icon success" style="display: block;">
+                      <span class="line tip"></span>
+                      <span class="line long"></span>
+                      <div class="placeholder"></div>
+                      <div class="fix"></div>
+                    </div>
+                  </div>
+                  <h4>Congratulations! You have completed your profile.</h4>
+                  <p>Your are ready to create your first Buyer Persona</p>
+                  <a href="{% url 'Identity:add_persona' %}" type="button" class="btn btn-primary btn-margin-top">Create Your First Persona</a>
+                </div>
+              </div>
+            </form>
+            <!-- Wizard Content -->
+          </div>
+        </div>
+        <!-- End Panel Wizard Form Container -->
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Invite Friends -->
+<div class="modal" id="inviteFriendsModal">
+  <div class="modal-dialog modal-center">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title">Invite Friends</h4>
+      </div>
+      {% include 'identity/welcome/invite_friends_form.html' with form=invite_form %}
+    </div>
+  </div>
+</div>
+<!-- Email Send Success -->
+<div class="modal" id="successModal">
+  <div class="modal-dialog modal-center">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title" style="color:green">Success</h4>
+      </div>
+      <div class="modal-body">
+        Invitations have been delivered.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" data-target="#editTeamModal">Ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<!-- Animsition -->
+<script src="{% static 'vendor/animsition/jquery.animsition.js' %}" type="text/javascript" charset="utf-8"></script>
+<!-- Jquery Wizard -->
+<script src="{% static 'vendor/jquery-wizard/jquery-wizard.js' %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'vendor/bootstrap-tokenfield/bootstrap-tokenfield.min.js' %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'vendor/formvalidation/formValidation.min.js' %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'vendor/formvalidation/framework/bootstrap.min.js' %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'vendor/x-editable/bootstrap-editable.js' %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'vendor/x-editable/address.min.js' %}" type="text/javascript" charset="utf-8"></script>
+<!-- plUpload -->
+<script src="{% static 'vendor/plupload/plupload.full.min.js' %}" type="text/javascript" charset="utf-8" type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'vendor/plupload/jquery.plupload.queue/jquery.plupload.queue.min.js' %}" type="text/javascript" charset="utf-8" type="text/javascript" charset="utf-8"></script>
+<!-- Components -->
+<script src="{% static 'js/components/asscrollable.js' %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'js/components/animsition.js' %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'js/components/slidepanel.js' %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'js/components/switchery.js' %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'js/components/jquery-wizard.js' %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'js/components/matchheight.js' %}" type="text/javascript" charset="utf-8"></script>
+<!-- Welcome Wizard script -->
+<script src="{% static 'grvty/js/welcome.min.js' %}"></script>
+<script type="text/javascript">
+$(document).ready(function($) {
+
+    var init_x_editable = function() {
+      var post_url = "{% url 'Identity:welcome' %}"
+
+      $.fn.editableform.buttons =
+        '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
+        '<i class="icon wb-check" aria-hidden="true"></i>' +
+        '</button>' +
+        '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
+        '<i class="icon wb-close" aria-hidden="true"></i>' +
+        '</button>';
+
+      $.fn.editabletypes.datefield.defaults.inputclass = "form-control input-sm";
+
+      //editables
+      $('#first_name').editable({
+        url: post_url,
+        type: 'text',
+        pk: 1,
+        name: '{{ form.first_name.name }}',
+        title: '{{ form.first_name.label }}'
+      });
+
+      $('#last_name').editable({
+        url: post_url,
+        type: 'text',
+        pk: 2,
+        name: 'last_name',
+        title: 'Last Name'
+      });
+
+      $('#email').editable({
+        url: post_url,
+        type: 'text',
+        name: 'email',
+        title: 'Email'
+      });
+
+    };
+
+    var destory_x_editable = function() {
+      $('#editableSuperuser').editable('destroy');
+    };
+
+    $.fn.editable.defaults.mode = 'inline';
+    init_x_editable();
+
+    $('#inviteFriendsModal').on('shown.bs.modal', function (e) {
+      $('#{{ invite_form.emails.auto_id }}')
+        .on('tokenfield:createtoken', function(e) {
+          var data = e.attrs.value.split('|');
+          e.attrs.value = data[1] || data[0];
+          e.attrs.label = data[1] ? data[0] + ' (' + data[1] + ')' : data[0];
+        })
+        .on('tokenfield:createdtoken', function(e) {
+          var re = /\S+@\S+\.\S+/;
+          var valid = re.test(e.attrs.value);
+          if (!valid) {
+            $(e.relatedTarget).addClass('invalid');
+          }
+        })
+        .on('tokenfield:edittoken', function(e) {
+          if (e.attrs.label !== e.attrs.value) {
+            var label = e.attrs.label.split(' (');
+            e.attrs.value = label[0] + '|' + e.attrs.value;
+          }
+        })
+        .tokenfield({
+          delimiter: [",", " "],
+          createTokensOnBlur: true
+        });
+        $('#{{ invite_form.emails.auto_id }}-tokenfield').focus();
+    });
+
+    $('#inviteFriendsModal').on('hidden.bs.modal', function (e) {
+      $('#invite_friends_form').find('.form-group').removeClass('has-error');
+      $('#errors-container').html('');
+    });
+
+    $('#inviteFriendsModal form').submit(function (evt) {
+      evt.preventDefault();
+      var form = this;
+      $.ajax({
+        url: $(form).attr('action'),
+        data: $(form).serialize(),
+        type: $(form).attr('method'),
+        xhrFields: {
+          withCredentials: true,
+        },
+        success: function(data) {
+          $('#errors-container').html("");
+          try {
+            data = $.parseJSON(data);
+          } catch (e) {};
+
+          if (data == 'OK') {
+            $(form).find('.form-group').removeClass('has-error');
+            $('#{{ invite_form.emails.auto_id }}').tokenfield('destroy');
+            $('#{{ invite_form.emails.auto_id }}').val('');
+
+            $('#inviteFriendsModal').modal('hide');
+            $('#successModal').modal();
+            setTimeout(function(){ $('#successModal').modal('hide'); }, 3000);
+          } else {
+            $('#inviteFriendsModal .modal-body').html($('.modal-body', data).html());
+            $('#{{ invite_form.emails.auto_id }}')
+              .on('tokenfield:createtoken', function(e) {
+                var data = e.attrs.value.split('|');
+                e.attrs.value = data[1] || data[0];
+                e.attrs.label = data[1] ? data[0] + ' (' + data[1] + ')' : data[0];
+              })
+              .on('tokenfield:createdtoken', function(e) {
+                var re = /\S+@\S+\.\S+/;
+                var valid = re.test(e.attrs.value);
+                if (!valid) {
+                  $(e.relatedTarget).addClass('invalid');
+                }
+              })
+              .on('tokenfield:edittoken', function(e) {
+                if (e.attrs.label !== e.attrs.value) {
+                  var label = e.attrs.label.split(' (');
+                  e.attrs.value = label[0] + '|' + e.attrs.value;
+                }
+              })
+              .tokenfield({
+                delimiter: [",", " "],
+                createTokensOnBlur: true
+              });
+          }
+        },
+      });
+    });
+
+    uploader = new plupload.Uploader({
+      runtimes : 'html5,flash,silverlight,html4',
+      browse_button : 'upload_pic',
+
+      url : "{% url 'CustomAuth:upload_photo' %}",
+
+      filters : {
+        max_file_size : '5mb',
+        mime_types: [
+        {title : "Image files", extensions : "jpg,png"}
+        ]
+      },
+
+      // Flash settings
+      flash_swf_url : "{% static 'libs/plupload/Moxie.swf' %}",
+
+      // Silverlight settings
+      silverlight_xap_url : "{% static 'libs/plupload/Moxie.xap' %}",
+      multipart_params: {
+        csrfmiddlewaretoken: "{{ csrf_token }}",
+      },
+      file_data_name: "image",
+      unique_names: true,
+      init: {
+
+        FilesAdded: function(up, files) {
+          plupload.each(files, function(file) {
+            uploader.start();
+          });
+        },
+        BeforeUpload: function(up, file) {
+          if (!file.type.match('image\/')){
+            alert('Tipo de archivo no permitido. Sólo se aceptan archivos con extensión '+ uploader.settings.filters.mime_types[0]['extensions']+'.\n'+
+            'Cambie el formato de su archivo e intente de nuevo.');
+            up.stop();
+            up.splice();
+          }
+        },
+        FileUploaded: function(up, file, info){
+          if (info.status == 200){
+            data = info.response.split(',');
+            $('.user_profile_image').each(function(){
+              $(this).attr('src', data[0]);
+            })
+          }
+
+        },
+        Error: function(up, err) {
+          document.getElementById('console').innerHTML += "\nError #" + err.code + ": " + err.message;
+        }
+      }
+    });
+
+    uploader.init();
+  });
+
+  function finishProfile() {
+    $.ajax({
+      url: "{% url 'Auth:complete_profile' %}",
+      type: 'GET',
+      xhrFields: {
+        withCredentials: true,
+      },
+    });
+  }
+</script>
+{% endblock %}

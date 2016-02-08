@@ -1,0 +1,80 @@
+@import '_variables';
+
+.page-forgot-password {
+  background-color: $tan-yellow;
+  p {
+    color: $empty-black;
+  }
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+  color: $empty-black;
+}
+
+.page-login-v3:before,
+.page-register-v3:before {
+  background: $empty-black;
+  background-image: -webkit-linear-gradient(top, $space-gray 0%, $empty-black 100%);
+  background-image: -o-linear-gradient(top, $space-gray 0%, $empty-black 100%);
+  background-image: -webkit-gradient(linear, left top, left bottom, from($space-gray), to($empty-black));
+  background-image: linear-gradient(to bottom, $space-gray 0%, $empty-black 100%);
+}
+
+.form-material .form-control,
+.form-material .form-control.focus,
+.form-material .form-control:focus {
+  background-image: -webkit-gradient(linear, left top, left bottom, from($old-steel), to($old-steel)), -webkit-gradient(linear, left top, left bottom, from($old-steel), to($old-steel));
+  background-image: -webkit-linear-gradient($old-steel, $old-steel), -webkit-linear-gradient($old-steel, $old-steel);
+  background-image: -o-linear-gradient($old-steel, $old-steel), -o-linear-gradient($old-steel, $old-steel);
+  background-image: linear-gradient($old-steel, $old-steel), linear-gradient($old-steel, $old-steel);
+}
+
+.form-material .form-control.focus~.floating-label,
+.form-material .form-control:focus~.floating-label {
+  color: $space-gray;
+}
+
+.form-control.focus,
+.form-control:focus {
+  border-color: $old-steel;
+}
+
+a {
+  color: $glory-gold;
+}
+a.focus, a:focus, a:hover {
+  color: $glory-gold-hover;
+}
+
+.page-login-v3 form .form-material label,
+.form-control {
+  color: $old-steel;
+}
+
+.btn-primary {
+  background-color: $glory-gold;
+  border-color: $glory-gold;
+}
+
+.btn-primary.focus, .btn-primary:focus, .btn-primary:hover {
+  background-color: $glory-gold-hover;
+  border-color: $glory-gold-hover;
+}
+
+body {
+  color: $old-steel;
+}
+
+.page-copyright,
+.page-copyright .social .icon {
+  color: $space-gray;
+}
+
+.page-copyright-inverse,
+.page-copyright-inverse .social .icon {
+  color: $tan-yellow;
+}
+
+p.error {
+  color: #f96868;
+}

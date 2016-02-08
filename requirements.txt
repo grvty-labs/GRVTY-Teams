@@ -1,0 +1,7 @@
+Django==1.8.6
+django-debug-toolbar==1.4
+django-solo==1.1.0
+Pillow==3.0.0
+shortuuid==0.4.2
+sqlparse==0.1.18
+wheel==0.24.0

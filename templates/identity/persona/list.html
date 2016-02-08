@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load humanize %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/pages/contacts.min.css' %}">
+{% endblock %}
+
+{% block body_class %}app-contacts{% endblock %}
+
+{% block content %}
+<div class="page padding-30">
+  <div class="page-content bg-white">
+    <!-- Contacts Content Header -->
+    <div class="page-header">
+      <h1 class="page-title">Personas</h1>
+      <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li class="active">Personas</li>
+      </ol>
+    </div>
+    <!-- Contacts Content -->
+    <div class="page-content page-content-table">
+      <!-- Contacts -->
+      <table class="table tablesaw" data-tablesaw-mode="stack" data-plugin="animateList"
+      data-animate="fade" data-child="tr" data-selectable="selectable">
+        <thead>
+          <tr>
+            <th class="cell-300" scope="col" data-tablesaw-sortable-col data-tablesaw-priority="3">Name</th>
+            <th class="cell-300" scope="col" data-tablesaw-sortable-col data-tablesaw-priority="3">Age</th>
+            <th scope="col" data-tablesaw-sortable-col data-tablesaw-priority="4">Job Title</th>
+            <th scope="col" data-tablesaw-sortable-col data-tablesaw-priority="4">Income</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for q in qs %}
+          <tr class="clickable-row" data-href="{% url 'Identity:view_persona' q.id %}">
+            <td class="cell-300">
+              <a class="avatar" href="javascript:void(0)">
+                <img class="img-responsive" src="{{ q.get_photo_url }}" alt="...">
+              </a>
+              <span>{{ q.name }}</span>
+            </td>
+            <td class="cell-300">{% if q.age %}{{ q.age }}{% endif %}</td>
+            <td>{{ q.job_title }}</td>
+            <td>{% if q.individual_income %}$ {{ q.individual_income|intcomma }}.00{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <ul data-plugin="paginator" data-total="50" data-skin="pagination-gap"></ul>
+    </div>
+  </div>
+</div>
+<!-- Site Action -->
+<div class="site-action">
+  <a href="{% url 'Identity:add_persona' %}" class="btn btn-success btn-floating">
+    <i class="front-icon wb-plus animation-scale-up"></i>
+  </a>
+</div>
+<!-- End Site Action -->
+{% endblock %}
+
+
+{% block js %}
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('.clickable-row').click(function() {
+      window.location = $(this).data('href');
+    });
+  });
+</script>
+{% endblock %}

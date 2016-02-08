@@ -1,0 +1,1 @@
+{% load configuration_tags %}Join {{ invitation.sender.first_name|title }}'s Team on {{ 'SITE_NAME'|settings }}

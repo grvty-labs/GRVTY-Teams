@@ -1,0 +1,64 @@
+{% extends 'base_simple.html' %}
+{% load configuration_tags %}
+{% load staticfiles %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/pages/forgot-password.min.css' %}">
+{% endblock %}
+
+{% block body_class %}page-forgot-password{% endblock %}
+
+{% block content %}
+<h2>Join {{ invitation.sender.first_name|title }}'s team</h2>
+<p>{{ invitation.sender.full_name }} has invited "{{ invitation.email }}" to collaborate in the team {{ invitation.team }} on {{ 'SITE_NAME'|settings }}</p>
+  {% if invitation.claimed %}
+  <p class="error">
+    This invitation has already been claimed,<br />
+    if you think this is an error get in touch with {{ invitation.sender.first_name|title }}.
+  </p>
+  <a class="btn btn-primary" href="/" style="margin-top:20px;">Go Back to app</a>
+  {% else %}
+    {% if request.user.is_authenticated %}
+    <form action="" method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary btn-block">Join Team</button>
+    </form>
+    {% else %}
+      <p style="margin-bottom: 20px;">
+        You need to be logged in to join a team, if you already have an account you can log in <a href="{% url 'Auth:login' %}?next={% url 'Auth:claim_invitation' invitation.uuid_code %}">here</a>, or you can create an account <a href="#">here.</a>
+      </p>
+      <a href="{% url 'Auth:login' %}?next={% url 'Auth:claim_invitation' invitation.uuid_code %}" class="btn btn-primary" style="margin-right:15px;">Log In</a>
+      or
+      <a href="{% url 'Auth:sign_up' %}?next={% url 'Auth:claim_invitation' invitation.uuid_code %}" class="btn btn-primary" style="margin-left:15px;">Sign Up</a>
+    {% endif %}
+  {% endif %}
+{% endblock %}
+
+{% block footer %}
+<footer class="page-copyright">
+  {% if CONFIGURATION.site_url %}
+  <p>WEBSITE BY <a href="{{ CONFIGURATION.site_url }}">{{ 'SITE_NAME'|settings }}</a></p>
+  {% else %}
+  <p>WEBSITE BY {{ 'SITE_NAME'|settings }}</p>
+  {% endif %}
+  <p>© 2015. All RIGHTS RESERVED.</p>
+</footer>
+{% endblock %}
+
+
+{% if not complete %}
+<form action="" method="post">
+{% csrf_token %}
+<div class="form-group {% if form.email.errors %}has-error{% endif %}">
+  <input type="email" class="form-control" name="{{ form.email.name }}" id="{{ form.email.auto_id }}" {% if form.email.value %}value="{{ form.email.value }}"{% endif %} placeholder="{{ form.email.label }}" autofocus />
+</div>
+<div class="form-group">
+  <button type="submit" class="btn btn-primary btn-block">Reset Password</button>
+</div>
+</form>
+<a href="{% url 'Auth:login' %}">Return to Log In</a>
+{% else %}
+<h2>Check your Email</h2>
+<p>We just sent you an email with a link to setup your new password</p>
+<a href="{% url 'Auth:login' %}" type="submit" class="btn btn-primary">Log In</a>
+{% endif %}

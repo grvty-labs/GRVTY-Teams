@@ -1,0 +1,409 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load humanize %}
+{% load persona_tags %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'fonts/ionicons/ionicons.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/chartist-js/chartist.css' %}">
+{% endblock %}
+
+{% block body_class %}persona{% endblock %}
+
+{% block content %}
+<div class="page">
+  <div class="page-header">
+    <h1 class="page-title">Persona</h1>
+    <ol class="breadcrumb">
+      <li><a href="/">Home</a></li>
+      <li><a href="{% url 'Identity:personas' %}">Personas</a></li>
+      <li class="active">{% firstof persona.name 'Persona' %}</li>
+    </ol>
+    <div class="page-header-actions">
+      <a href="{% url 'Identity:edit_persona' persona.id %}" type="button" class="btn btn-sm btn-icon btn-inverse btn-round" data-toggle="tooltip" data-original-title="Edit">
+        <i class="icon wb-pencil" aria-hidden="true"></i>
+      </a>
+      {% if request.user == persona.owner %}
+      <button class="btn btn-sm btn-icon btn-inverse btn-round" data-toggle="tooltip" data-original-title="Delete" id="delete_persona_btn">
+        <i class="icon wb-trash" aria-hidden="true"></i>
+      </button>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="page-content container-fluid padding-30">
+    <div class="row">
+      <div class="col-md-3">
+
+        <div class="widget widget-shadow text-center persona-details">
+          <div class="widget-header">
+            <div class="widget-header-content">
+              <a class="avatar avatar-lg" href="javascript:void(0)">
+                <img src="{{ persona.get_photo_url}}">
+              </a>
+              <h4 class="profile-user">{{ persona.name|title }}</h4>
+              <p class="profile-job">{{ persona.job_title }}{% if persona.age %} - {{ persona.age }} y.o.{% endif %}</p>
+              <p>{{ persona.main_quote }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            {% if persona.gender == DEMOGRAPHIC.MALE %}
+            <div class="widget">
+              <div class="widget-content">
+                <div class="counter counter-lg counter-inverse bg-blue-600 vertical-align height-150">
+                  <div class="vertical-align-middle">
+                    <div class="counter-icon margin-bottom-5"><i class="icon ion-male" aria-hidden="true"></i></div>
+                    <span class="counter-number">{{ persona.get_gender_display }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% elif persona.gender == DEMOGRAPHIC.FEMALE %}
+            <div class="widget">
+              <div class="widget-content">
+                <div class="counter counter-lg counter-inverse bg-red-600 vertical-align height-150">
+                  <div class="vertical-align-middle">
+                    <div class="counter-icon margin-bottom-5"><i class="icon ion-female" aria-hidden="true"></i></div>
+                    <span class="counter-number">{{ persona.get_gender_display }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+
+          <div class="col-md-6">
+            {% if persona.communication_preference %}
+            <div class="widget">
+              <div class="widget-content">
+                <div class="counter counter-lg counter-inverse bg-purple-600 vertical-align height-150">
+                  <div class="vertical-align-middle">
+                    {% if persona.communication_preference == DEMOGRAPHIC.EMAIL %}
+                    <div class="counter-icon margin-bottom-5"><i class="icon ion-android-mail" aria-hidden="true"></i></div>
+                    {% elif persona.communication_preference == DEMOGRAPHIC.TELEPHONE %}
+                    <div class="counter-icon margin-bottom-5"><i class="icon ion-ios-telephone" aria-hidden="true"></i></div>
+                    {% endif %}
+                    <span class="counter-number">{{ persona.get_communication_preference_display }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+
+        </div>
+
+        {% if persona.objections_barriers %}
+        <div class="widget">
+          <div class="widget-content padding-30 bg-white">
+            <div class="counter counter-md text-left">
+              <div class="counter-label text-uppercase margin-bottom-5">Objections / Barriers</div>
+              <div class="counter-number-group margin-bottom-10">{{ persona.objections_barriers }}</div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+
+      <div class="col-md-3">
+
+        {% if persona.urbanicity %}
+        <div class="widget widget-shadow">
+          <div class="widget-header cover">
+            <img class="cover-image" src="{{ persona.get_urbanicity_photo }}" height="200">
+            <div class="overlay-panel overlay-background">
+              <div class="font-size-16 pull-right"><i class="icon wb-map" aria-hidden="true"></i></div>
+              <p class="font-size-20">{{ persona.get_urbanicity_display }}</p>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        {% if persona.individual_income or persona.household_income %}
+        <div class="widget widget-shadow" id="incomePie">
+            <div class="widget-content padding-30 height-full">
+              <div class="font-size-20 text-center" >
+                Income
+              </div>
+              <div class="ct-chart height-150"></div>
+              <div class="row">
+                <div class="col-xs-6">
+                  <div class="counter">
+                    <div class="counter-number-group font-size-14">
+                      <span class="counter-number-related">
+                        <span class="icon wb-medium-point purple-600"></span>
+                      </span>
+                      {% if persona.individual_income %}
+                      <span class="counter-number font-size-24">$ {{ persona.individual_income|intcomma }}</span>
+                      {% else %}
+                      <span class="counter-number font-size-24">$ 0.00</span>
+                      {% endif %}
+                    </div>
+                    <div class="counter-label text-uppercase">INDIVIDUAL</div>
+                  </div>
+                </div>
+                <div class="col-xs-6">
+                  <div class="counter">
+                    <div class="counter-number-group font-size-14">
+                      <span class="counter-number-related">
+                        <span class="icon wb-medium-point red-600"></span>
+                      </span>
+                      {% if persona.household_income %}
+                      <span class="counter-number font-size-24">$ {{ persona.household_income|intcomma }}</span>
+                      {% else %}
+                      <span class="counter-number font-size-24">$ 0.00</span>
+                      {% endif %}
+                    </div>
+                    <div class="counter-label text-uppercase">HOUSEHOLD</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if persona.funnel %}
+        <div class="widget widget-shadow">
+          <div class="widget-header bg-teal-600 white padding-15 clearfix">
+            <div class="font-size-18">Purchase Funnel</div>
+          </div>
+          <div class="widget-content">
+            <ul class="list-group list-group-bordered">
+              {% for line in persona.funnel|split_lines %}
+              <li class="list-group-item">
+                {{ forloop.counter }}. {{ line }}
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+
+      <div class="col-md-6">
+
+        {% if persona.has_goals %}
+        <div class="widget" style="overflow: hidden;">
+          <div class="widget-content">
+            <div class="row no-space">
+              <div class="col-sm-6">
+                <div class="vertical-align text-center bg-light-green-600 white padding-30 height-300">
+                  <div class="counter-icon padding-30 white" style="position:absolute;top:0;left:0;">
+                    Main Goal
+                  </div>
+                  <div class="vertical-align-middle font-size-40">
+                    {{ persona.main_goal }}
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="vertical-align text-center bg-white black padding-30 height-300">
+                  <div class="counter-icon padding-30" style="position:absolute;top:0;left:0;">
+                    Secondary Goal
+                  </div>
+                  <div class="vertical-align-middle font-size-40">
+                    {{ persona.secondary_goal }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        {% if persona.has_pain_or_gain %}
+        <div class="row">
+          <div class="col-md-6">
+            <div class="widget">
+              <div class="widget-content padding-35 bg-white clearfix">
+                <div class="pull-left white">
+                  <i class="icon icon-circle icon-2x wb-close bg-red-600" aria-hidden="true"></i>
+                </div>
+                <div class="counter counter-md counter text-right pull-right">
+                  <div class="counter-number-group">
+                    <span class="counter-number-related text-capitalize">{{ persona.biggest_pain }}</span>
+                  </div>
+                  <div class="counter-label text-capitalize font-size-16">Biggest Pain</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="widget">
+              <div class="widget-content padding-35 bg-white clearfix">
+                <div class="counter counter-md pull-left text-left">
+                  <div class="counter-number-group">
+                    <span class="counter-number-related text-capitalize">{{ persona.biggest_gain }}</span>
+                  </div>
+                  <div class="counter-label text-capitalize font-size-16">Biggest Gain</div>
+                </div>
+                <div class="pull-right white">
+                  <i class="icon icon-circle icon-2x wb-check bg-green-600" aria-hidden="true"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+
+          <div class="col-md-6">
+            <div class="widget">
+              <div class="widget-content padding-30 bg-white">
+                <div class="counter counter-md text-left">
+                  <div class="counter-label text-uppercase margin-bottom-5">Decrease Pain</div>
+                  <div class="counter-number-group margin-bottom-10">{{ persona.decrease_pain }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="widget">
+              <div class="widget-content padding-30 bg-white">
+                <div class="counter counter-md text-right">
+                  <div class="counter-label text-uppercase margin-bottom-5">Increase Gain</div>
+                  <div class="counter-number-group margin-bottom-10">{{ persona.increase_gain }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        {% endif %}
+
+        {% if persona.work_experience %}
+        <div class="widget">
+          <div class="widget-content padding-30 bg-blue-600">
+            <div class="widget-watermark darker font-size-60 margin-15"><i class="icon wb-clipboard" aria-hidden="true"></i></div>
+            <div class="counter counter-md counter-inverse text-left">
+              <div class="counter-number-group">
+                {{ persona.work_experience }}
+              </div>
+              <div class="counter-label text-capitalize">Work Experience</div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        {% if persona.product_pitch %}
+        <div class="widget widget-shadow">
+          <div class="widget-content padding-20 bg-orange-500 white height-full">
+            <div style="overflow:hidden;">
+              <div class="font-size-18">Product Pitch</div>
+              <blockquote class="cover-quote font-size-16 white">{{ persona.product_pitch }}</blockquote>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        {% if persona.triggering_events %}
+        <div class="widget widget-shadow">
+          <div class="widget-header bg-blue-600 white padding-15 clearfix">
+            <div class="font-size-18">Triggering Events</div>
+          </div>
+          <div class="widget-content">
+            <ul class="list-group list-group-bordered">
+              {% for line in persona.triggering_events|split_lines %}
+              <li class="list-group-item">
+                {{ line }}
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        {% endif %}
+
+        {% if persona.influencers %}
+        <div class="widget widget-shadow">
+          <div class="widget-header bg-teal-600 white padding-15 clearfix">
+            <div class="font-size-18">Influencers</div>
+          </div>
+          <div class="widget-content">
+            <ul class="list-group list-group-bordered">
+              {% for line in persona.influencers|split_lines %}
+              <li class="list-group-item">
+                {{ line }}
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        {% endif %}
+
+        {% if persona.identifiers %}
+        <div class="widget widget-shadow">
+          <div class="widget-header bg-purple-600 white padding-15 clearfix">
+            <div class="font-size-18">Identifiers</div>
+          </div>
+          <div class="widget-content">
+            <ul class="list-group list-group-bordered">
+              {% for line in persona.identifiers|split_lines %}
+              <li class="list-group-item">
+                {{ line }}
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% if request.user == persona.owner %}
+<div class="modal" id="deletePersonaModal">
+  <div class="modal-dialog modal-center">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title">Delete Persona</h4>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete <span class="italic">{% firstof persona.name "Persona" %}</span> persona?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <a href="{% url 'Identity:delete_persona' persona.id %}" class="btn btn-danger">Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+
+
+{% block js %}
+<script src="{% static 'vendor/chartist-js/chartist.min.js' %}"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+
+    {% if request.user == persona.owner %}
+    $('#delete_persona_btn').click(function() {
+      $('#deletePersonaModal').modal('show');
+    });
+    {% endif %}
+
+    {% if persona.individual_income or persona.household_income %}
+    new Chartist.Pie('#incomePie .ct-chart',
+      {
+        series: [{{ persona.individual_income_percentage }}, {{ persona.household_income_percentage }}]
+      }, {
+        startAngle: 0,
+        showLabel: false
+      }
+    );
+    {% endif %}
+
+  });
+</script>
+{% endblock %}

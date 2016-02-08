@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'vendor/dropify/dropify.min.css' %}">
+<style type="text/css">
+  .page-header {
+    padding-bottom: 0px;
+  }
+  textarea {
+    height: 150px !important;
+  }
+  label + textarea {
+    margin-top: 10px !important;
+  }
+  .dropify-wrapper {
+    max-width: 200px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page">
+  <div class="page-header">
+    <h1 class="page-title">Persona</h1>
+    <ol class="breadcrumb">
+      <li><a href="/">Home</a></li>
+      <li><a href="{% url 'Identity:personas' %}">Personas</a></li>
+      {% if form.instance.pk %}
+      <li><a href="{% url 'Identity:view_persona' form.instance.pk %}">{% firstof persona.name 'Persona' %}</a></li>
+      <li class="active">Edit</li>
+      {% else %}
+      <li class="active">New Persona</li>
+      {% endif %}
+    </ol>
+  </div>
+
+  <div class="padding-30">
+    <div class="page-content bg-white padding-30">
+      <form action="" method="post" enctype='multipart/form-data'>
+        {% csrf_token %}
+        <div class="row">
+          <div class="col-sm-6">
+            <fieldset>
+              <legend>Personal Info:</legend>
+              <div class="form-group">
+                <label class="control-label" for="{{ form.photo.auto_id }}">{{ form.photo.label }}</label>
+                <input type="file" name="{{ form.photo.name }}" id="{{ form.photo.auto_id }}" data-plugin="dropify" data-default-file="{{ form.instance.get_photo_url }}" data-max-file-size="2M" accept="image/*" />
+                <div style="display:none">
+                  <input id="{{ form.photo.name }}-clear_id" name="{{ form.photo.name }}-clear" type="checkbox">
+                </div>
+              </div>
+              <div class="form-group form-material">
+                <label class="control-label" for="{{ form.name.auto_id }}">{{ form.name.label }}</label>
+                {{ form.name }}
+              </div>
+              <div class="form-group form-material">
+                <label class="control-label" for="{{ form.job_title.auto_id }}">{{ form.job_title.label }}</label>
+                {{ form.job_title }}
+              </div>
+              <div class="form-group form-material">
+                <label class="control-label" for="{{ form.age.auto_id }}">{{ form.age.label }}</label>
+                {{ form.age }}
+              </div>
+              <div class="form-group form-material">
+                <label class="control-label" for="{{ form.gender.auto_id }}">{{ form.gender.label }}</label>
+                {{ form.gender }}
+              </div>
+              <div class="form-group form-material">
+                <label class="control-label" for="{{ form.communication_preference.auto_id }}">{{ form.communication_preference.label }}</label>
+                {{ form.communication_preference }}
+              </div>
+              <div class="form-group form-material">
+                <label class="control-label" for="{{ form.urbanicity.auto_id }}">{{ form.urbanicity.label }}</label>
+                {{ form.urbanicity }}
+              </div>
+              <div class="form-group form-material">
+                <label class="control-label" for="{{ form.main_quote.auto_id }}">{{ form.main_quote.label }}</label>
+                {{ form.main_quote }}
+              </div>
+              <div class="form-group form-material">
+                <label class="control-label" for="{{ form.work_experience.auto_id }}">{{ form.work_experience.label }}</label>
+                {{ form.work_experience }}
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>Goals:</legend>
+              <div class="form-group form-material">
+                <label class="control-label" for="{{ form.main_goal.auto_id }}">{{ form.main_goal.label }}</label>
+                {{ form.main_goal }}
+              </div>
+              <div class="form-group form-material">
+                <label class="control-label" for="{{ form.secondary_goal.auto_id }}">{{ form.secondary_goal.label }}</label>
+                {{ form.secondary_goal }}
+              </div>
+            </fieldset>
+          </div>
+          <div class="col-sm-6">
+            <fieldset>
+              <legend>Pains/Gains:</legend>
+              <div class="form-group form-material">
+                <label class="control-label" for="{{ form.biggest_gain.auto_id }}">{{ form.biggest_gain.label }}</label>
+                {{ form.biggest_gain }}
+              </div>
+              <div class="form-group form-material">
+                <label class="control-label" for="{{ form.increase_gain.auto_id }}">{{ form.increase_gain.label }}</label>
+                {{ form.increase_gain }}
+              </div>
+              <div class="form-group form-material">
+                <label class="control-label" for="{{ form.biggest_pain.auto_id }}">{{ form.biggest_pain.label }}</label>
+                {{ form.biggest_pain }}
+              </div>
+              <div class="form-group form-material">
+                <label class="control-label" for="{{ form.decrease_pain.auto_id }}">{{ form.decrease_pain.label }}</label>
+                {{ form.decrease_pain }}
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>Income:</legend>
+              <div class="form-group form-material">
+                <label class="control-label" for="{{ form.individual_income.auto_id }}">{{ form.individual_income.label }}</label>
+                {{ form.individual_income }}
+              </div>
+              <div class="form-group form-material">
+                <label class="control-label" for="{{ form.household_income.auto_id }}">{{ form.household_income.label }}</label>
+                {{ form.household_income }}
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>Other:</legend>
+              <div class="form-group form-material">
+                <label class="control-label" for="{{ form.product_pitch.auto_id }}">{{ form.product_pitch.label }}</label>
+                {{ form.product_pitch }}
+              </div>
+              <div class="form-group form-material">
+                <label class="control-label" for="{{ form.funnel.auto_id }}">{{ form.funnel.label }}</label>
+                {{ form.funnel }}
+              </div>
+              <div class="form-group form-material">
+                <label class="control-label" for="{{ form.triggering_events.auto_id }}">{{ form.triggering_events.label }}</label>
+                {{ form.triggering_events }}
+              </div>
+              <div class="form-group form-material">
+                <label class="control-label" for="{{ form.identifiers.auto_id }}">{{ form.identifiers.label }}</label>
+                {{ form.identifiers }}
+              </div>
+              <div class="form-group form-material">
+                <label class="control-label" for="{{ form.influencers.auto_id }}">{{ form.influencers.label }}</label>
+                {{ form.influencers }}
+              </div>
+              <div class="form-group form-material">
+                <label class="control-label" for="{{ form.objections_barriers.auto_id }}">{{ form.objections_barriers.label }}</label>
+                {{ form.objections_barriers }}
+              </div>
+            </fieldset>
+          </div>
+        </div>
+        <div class="site-action">
+          <button class="btn btn-success btn-floating" type="submit">
+            <i class="icon fa-save"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js/components/material.min.js' %}"></script>
+<script src="{% static 'vendor/dropify/dropify.min.js' %}"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('.dropify-clear').click(function() {
+      $('#{{ form.photo.name }}-clear_id').attr('checked', true);
+    });
+    $('#{{ form.photo.auto_id }}').change(function() {
+      $('#{{ form.photo.name }}-clear_id').attr('checked', false);
+    });
+  })
+</script>
+{% endblock %}
